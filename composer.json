@@ -1,0 +1,20 @@
+{
+    "name": "letscodehu/php-oop",
+    "authors": [
+        {
+            "name": "Krisztian Papp",
+            "email": "fejlesztes@letscode.hu"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "" : [
+                "core/", "app/"
+            ]
+        }
+    },
+    "require": {
+        "swiftmailer/swiftmailer": "^6.2",
+      "ext-mysqli": "*"
+    }
+}
