@@ -13,9 +13,6 @@ return [
     'responseEmitter' => function () {
         return new ResponseEmitter();
     },
-    'homeController' => function (ServiceContainer $container) {
-        return new Controllers\HomeController($container->get("photoService"));
-    },
     "config" => function (ServiceContainer $container) {
         $base = $container->get("basePath");
         return include_once $base . "/config.php";
@@ -35,23 +32,44 @@ return [
     "photoService" => function (ServiceContainer $container) {
         return new Services\PhotoService($container->get("connection"));
     },
+    'homeController' => function (ServiceContainer $container) {
+        return new Controllers\Image\HomeController($container->get("photoService"));
+    },
     'singleImageController' => function (ServiceContainer $container) {
-        return new Controllers\SingleImageController($container->get("photoService"));
+        return new Controllers\Image\SingleImageController($container->get("photoService"));
     },
     'singleImageEditController' => function () {
-        return new Controllers\SingleImageEditController();
+        return new Controllers\Image\SingleImageEditController();
     },
     'singleImageDeleteController' => function () {
-        return new Controllers\SingleImageDeleteController();
+        return new Controllers\Image\SingleImageDeleteController();
+    },
+    'imageCreateFormController' => function () {
+        return new Controllers\Image\ImageCreateFormController();
+    },
+    'imageCreateSubmitController' => function () {
+        return new Controllers\Image\ImageCreateSubmitController();
     },
     'loginFormController' => function (ServiceContainer $container) {
-        return new Controllers\LoginFormController($container->get("session"));
+        return new Controllers\Auth\LoginFormController($container->get("session"));
     },
     'loginSubmitController' => function (ServiceContainer $container) {
-        return new Controllers\LoginSubmitController($container->get("authService"), $container->get("session"));
+        return new Controllers\Auth\LoginSubmitController($container->get("authService"), $container->get("session"));
     },
     'logoutSubmitController' => function (ServiceContainer $container) {
-        return new Controllers\LogoutSubmitController($container->get("authService"));
+        return new Controllers\Auth\LogoutSubmitController($container->get("authService"));
+    },
+    'forgotPasswordController' => function (ServiceContainer $container) {
+        return new Controllers\ForgotPassword\ForgotPasswordController($container->get("session"));
+    },
+    'passwordResetController' => function (ServiceContainer $container) {
+        return new Controllers\ForgotPassword\PasswordResetController($container->get("request"));
+    },
+    'passwordResetSubmitController' => function (ServiceContainer $container) {
+        return new Controllers\ForgotPassword\PasswordResetSubmitController($container->get("request"), $container->get("forgotPasswordService"));
+    },
+    'forgotPasswordSubmitController' => function (ServiceContainer $container) {
+        return new Controllers\ForgotPassword\ForgotPasswordSubmitController($container->get("request"), $container->get("forgotPasswordService"));
     },
     "authService" => function (ServiceContainer $container) {
         return new Services\AuthService($container->get("connection"), $container->get("session"));
@@ -59,20 +77,8 @@ return [
     'notFoundController' => function () {
         return new Controllers\NotFoundController();
     },
-    'forgotPasswordSubmitController' => function (ServiceContainer $container) {
-        return new Controllers\ForgotPasswordSubmitController($container->get("request"), $container->get("forgotPasswordService"));
-    },
     'forgotPasswordService' => function (ServiceContainer $container) {
         return new ForgotPasswordService($container->get("connection"), $container->get("mailer"), $container->get("baseUrl"));
-    },
-    'forgotPasswordController' => function (ServiceContainer $container) {
-        return new Controllers\ForgotPasswordController($container->get("session"));
-    },
-    'passwordResetController' => function (ServiceContainer $container) {
-        return new Controllers\PasswordResetController($container->get("request"));
-    },
-    'passwordResetSubmitController' => function (ServiceContainer $container) {
-        return new Controllers\PasswordResetSubmitController($container->get("request"), $container->get("forgotPasswordService"));
     },
     "mailer" => function (ServiceContainer $container) {
         $mailerConfig = $container->get("config")["mail"];
@@ -113,7 +119,8 @@ return [
         $dispatcher->addRoute('/reset', 'passwordResetController@show');
         $dispatcher->addRoute('/reset', 'passwordResetSubmitController@submit', "POST");
 
-
+        $dispatcher->addRoute('/image/add', 'imageCreateFormController@show');
+        $dispatcher->addRoute('/image/add', 'imageCreateSubmitController@submit', "POST");
         return $dispatcher;
     }
 ];

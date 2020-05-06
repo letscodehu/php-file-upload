@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Controllers;
+namespace Controllers\ForgotPassword;
 
 
 use Services\ForgotPasswordService;

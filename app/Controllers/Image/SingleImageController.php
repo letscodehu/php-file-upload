@@ -1,6 +1,6 @@
 <?php
 
-namespace Controllers;
+namespace Controllers\Image;
 
 use Services\PhotoService;
 
