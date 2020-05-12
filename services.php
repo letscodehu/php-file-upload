@@ -47,8 +47,8 @@ return [
     'imageCreateFormController' => function () {
         return new Controllers\Image\ImageCreateFormController();
     },
-    'imageCreateSubmitController' => function () {
-        return new Controllers\Image\ImageCreateSubmitController();
+    'imageCreateSubmitController' => function (ServiceContainer $container) {
+        return new Controllers\Image\ImageCreateSubmitController($container->get("basePath"));
     },
     'loginFormController' => function (ServiceContainer $container) {
         return new Controllers\Auth\LoginFormController($container->get("session"));

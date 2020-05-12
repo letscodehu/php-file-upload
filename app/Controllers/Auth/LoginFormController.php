@@ -1,6 +1,6 @@
 <?php
 
-namespace Controllers;
+namespace Controllers\Auth;
 
 use Session\Session;
 
