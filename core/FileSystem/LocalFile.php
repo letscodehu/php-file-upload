@@ -11,7 +11,7 @@ class LocalFile implements File {
     }
 
     public function moveTo($target) {
-        rename($name, $target);
+        rename($this->name, $target);
     }
 
 }

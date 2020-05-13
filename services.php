@@ -3,6 +3,7 @@
 use Middleware\AuthorizationMiddleware;
 use Services\ForgotPasswordService;
 use Request\RequestFactory;
+use Exception\SqlException;
 
 return [
     "responseFactory" => function (ServiceContainer $container) {
@@ -39,17 +40,18 @@ return [
     'singleImageController' => function (ServiceContainer $container) {
         return new Controllers\Image\SingleImageController($container->get("photoService"));
     },
-    'singleImageEditController' => function () {
-        return new Controllers\Image\SingleImageEditController();
+    'singleImageEditController' => function (ServiceContainer $container) {
+        return new Controllers\Image\SingleImageEditController($container->get("photoService"));
     },
-    'singleImageDeleteController' => function () {
-        return new Controllers\Image\SingleImageDeleteController();
+    'singleImageDeleteController' => function (ServiceContainer $container) {
+        return new Controllers\Image\SingleImageDeleteController($container->get("photoService"));
     },
     'imageCreateFormController' => function () {
         return new Controllers\Image\ImageCreateFormController();
     },
     'imageCreateSubmitController' => function (ServiceContainer $container) {
-        return new Controllers\Image\ImageCreateSubmitController($container->get("basePath"), $container->get("request"));
+        return new Controllers\Image\ImageCreateSubmitController($container->get("basePath"), 
+        $container->get("request"), $container->get("photoService"));
     },
     'loginFormController' => function (ServiceContainer $container) {
         return new Controllers\Auth\LoginFormController($container->get("session"));

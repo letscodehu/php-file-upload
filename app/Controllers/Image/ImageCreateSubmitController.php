@@ -4,21 +4,26 @@ namespace Controllers\Image;
 
 use Request\Request;
 
+use Services\PhotoService;
+
 class ImageCreateSubmitController {
 
     private $basePath;
     private $request;
+    private $photoService;
 
-    public function __construct($basePath, Request $request) {
+    public function __construct(string $basePath, Request $request, PhotoService $photoService) {
         $this->basePath = $basePath;
         $this->request = $request;
+        $this->photoService = $photoService;
     }
 
     public function submit() {
         // handle uploaded file
         $targetDir = $this->basePath. "/storage/";        
         try {
-            $file = $this->request->getFile("fil");
+            $title = $this->request->getParam("title");
+            $file = $this->request->getFile("file");
             switch($file->error()) {
                 case UPLOAD_ERR_OK:
                     break;
@@ -28,16 +33,16 @@ class ImageCreateSubmitController {
                 case UPLOAD_ERR_FORM_SIZE:
                     throw new \RuntimeException("Exceeded filesize limit.");
                 default:
-                    throw new \RuntimeExcpetion("Unknown errors.");
+                    throw new \RuntimeException("Unknown errors.");
             }
-            $targetFile = $targetDir. basename($file->getName());
+            $targetFile = uniqid($targetDir, true). ".png";
             $check = getimagesize($file->getTemporaryName());
             if ($check !== false) {
                 $file->moveTo($targetFile);
-                // create image record
+                $photo = $this->photoService->createImage($title, "/private/" . basename($targetFile));
                 // redirect to created image
                 return [
-                    "redirect:/", [
+                    "redirect:/image/" . $photo->getId(), [
                     ]
                 ];    
             } else {

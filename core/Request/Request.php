@@ -59,6 +59,17 @@ class Request {
     {
         return $this->files;
     }
+
+    /**
+     * @return string
+     */
+    public function getParam($fieldName) {
+        if (!array_key_exists($fieldName, $this->params)) {
+            throw new \RuntimeException("The field '${fieldName}' is not present in request parameters!");
+        }
+        return $this->params[$fieldName];
+    }
+
     public function getFile($fieldName)
     {
         if (!array_key_exists($fieldName, $this->files)) {
