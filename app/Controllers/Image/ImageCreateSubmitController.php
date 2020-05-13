@@ -2,19 +2,24 @@
 
 namespace Controllers\Image;
 
+use Request\Request;
+
 class ImageCreateSubmitController {
 
     private $basePath;
+    private $request;
 
-    public function __construct($basePath) {
+    public function __construct($basePath, Request $request) {
         $this->basePath = $basePath;
+        $this->request = $request;
     }
 
     public function submit() {
         // handle uploaded file
-        $targetDir = $this->basePath. "/storage/";
+        $targetDir = $this->basePath. "/storage/";        
         try {
-            switch($_FILES['file']['error']) {
+            $file = $this->request->getFile("fil");
+            switch($file->error()) {
                 case UPLOAD_ERR_OK:
                     break;
                 case UPLOAD_ERR_NO_FILE:
@@ -25,10 +30,10 @@ class ImageCreateSubmitController {
                 default:
                     throw new \RuntimeExcpetion("Unknown errors.");
             }
-            $targetFile = $targetDir. basename($_FILES["file"]["name"]);
-            $check = getimagesize($_FILES["file"]["tmp_name"]);
+            $targetFile = $targetDir. basename($file->getName());
+            $check = getimagesize($file->getTemporaryName());
             if ($check !== false) {
-                move_uploaded_file($_FILES["file"]["tmp_name"], $targetFile);
+                $file->moveTo($targetFile);
                 // create image record
                 // redirect to created image
                 return [

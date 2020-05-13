@@ -1,5 +1,6 @@
 <?php
 
+use Response\Response;
 
 class Application {
 

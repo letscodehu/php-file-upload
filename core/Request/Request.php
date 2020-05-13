@@ -1,6 +1,9 @@
 <?php
 
+namespace Request;
+
 use Session\Session;
+use RuntimeException;
 
 class Request {
 
@@ -11,8 +14,9 @@ class Request {
     private $uri;
     private $method;
     private $session;
+    private $files;
 
-    public function __construct($uri, $method, Session $session, $body = null, $headers = [], $cookies = [], $params = []) {
+    public function __construct($uri, $method, Session $session, $body = null, $headers = [], $cookies = [], $params = [], $files = []) {
         $this->uri = $uri;
         $this->method = $method;
         $this->body = $body;
@@ -20,6 +24,7 @@ class Request {
         $this->cookies = $cookies;
         $this->params = $params;
         $this->session = $session;
+        $this->files = $files;
     }
 
     public function getUri() {
@@ -49,6 +54,17 @@ class Request {
     public function getSession()
     {
         return $this->session;
+    }
+    public function getFiles()
+    {
+        return $this->files;
+    }
+    public function getFile($fieldName)
+    {
+        if (!array_key_exists($fieldName, $this->files)) {
+            throw new RuntimeException("The field '${fieldName}' is not present in uploaded files!");
+        }
+        return $this->files[$fieldName];
     }
 
 }

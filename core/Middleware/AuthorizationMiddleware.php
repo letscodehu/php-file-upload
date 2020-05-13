@@ -3,7 +3,8 @@
 
 namespace Middleware;
 
-
+use Response\Response;
+use Request\Request;
 use Services\AuthService;
 
 class AuthorizationMiddleware implements Middleware
@@ -36,10 +37,10 @@ class AuthorizationMiddleware implements Middleware
         $this->loginUrl = $loginUrl;
     }
 
-    function process(\Request $request, \Response $response, callable $next)
+    function process(Request $request, Response $response, callable $next)
     {
         if (in_array($request->getUri(), $this->protectedUrls) && !$this->authService->check()) {
-            return \Response::redirect($this->loginUrl);
+            return Response::redirect($this->loginUrl);
         }
         return $next($request, $response);
     }

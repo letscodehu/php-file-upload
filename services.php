@@ -2,16 +2,17 @@
 
 use Middleware\AuthorizationMiddleware;
 use Services\ForgotPasswordService;
+use Request\RequestFactory;
 
 return [
     "responseFactory" => function (ServiceContainer $container) {
-        return new ResponseFactory($container->get("viewRenderer"));
+        return new Response\ResponseFactory($container->get("viewRenderer"));
     },
     "viewRenderer" => function (ServiceContainer $container) {
         return new ViewRenderer($container->get("basePath"));
     },
     'responseEmitter' => function () {
-        return new ResponseEmitter();
+        return new Response\ResponseEmitter();
     },
     "config" => function (ServiceContainer $container) {
         $base = $container->get("basePath");
@@ -48,7 +49,7 @@ return [
         return new Controllers\Image\ImageCreateFormController();
     },
     'imageCreateSubmitController' => function (ServiceContainer $container) {
-        return new Controllers\Image\ImageCreateSubmitController($container->get("basePath"));
+        return new Controllers\Image\ImageCreateSubmitController($container->get("basePath"), $container->get("request"));
     },
     'loginFormController' => function (ServiceContainer $container) {
         return new Controllers\Auth\LoginFormController($container->get("session"));
@@ -92,7 +93,7 @@ return [
         return \Session\SessionFactory::build($sessionConfig["driver"], $sessionConfig["config"]);
     },
     'request' => function (ServiceContainer $container) {
-        return new Request($_SERVER["REQUEST_URI"], $_SERVER["REQUEST_METHOD"], $container->get("session"), file_get_contents('php://input'), getallheaders(), $_COOKIE, array_merge($_GET, $_POST));
+        return RequestFactory::createFromGlobals($container);
     },
     'pipeline' => function (ServiceContainer $container) {
         $pipeline = new Middleware\MiddlewareStack();

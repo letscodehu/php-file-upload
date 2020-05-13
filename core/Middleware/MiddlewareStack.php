@@ -2,6 +2,9 @@
 
 namespace Middleware;
 
+use Response\Response;
+use Request\Request;
+
 class MiddlewareStack {
 
     private $middlewares = [];
@@ -10,11 +13,11 @@ class MiddlewareStack {
         $this->middlewares[] = $middleware;
     }
 
-    public function pipe(\Request $request, \Response $response) {
+    public function pipe(Request $request, Response $response) {
         return $this->__invoke($request, $response);
     }
 
-    public function __invoke(\Request $request, \Response $response) {
+    public function __invoke(Request $request, Response $response) {
         $middleware = array_shift($this->middlewares);
         if ($middleware == null) {
             return $response;

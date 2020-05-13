@@ -1,5 +1,7 @@
 <?php
 
+namespace Response;
+
 class Response {
         
     private $headers = [];

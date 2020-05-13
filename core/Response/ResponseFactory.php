@@ -1,10 +1,14 @@
 <?php 
 
+namespace Response;
+
+use Request\Request;
+
 class ResponseFactory {
 
     private $viewRenderer;
 
-    public function __construct(ViewRenderer $viewRenderer) {
+    public function __construct(\ViewRenderer $viewRenderer) {
         $this->viewRenderer = $viewRenderer;
     }
 
@@ -15,7 +19,7 @@ class ResponseFactory {
                     "Location" => substr($controllerResult[0], 9)
                 ],  302, "Found");
             } else {
-                $modelAndView = new ModelAndView($controllerResult[0], array_merge($controllerResult[1], $request->getSession()->toArray()));
+                $modelAndView = new \ModelAndView($controllerResult[0], array_merge($controllerResult[1], $request->getSession()->toArray()));
                 return new Response($this->viewRenderer->render($modelAndView), [], 200, "OK");
             }
         }

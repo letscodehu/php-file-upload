@@ -1,4 +1,7 @@
 <?php 
+
+namespace Response;
+
 class ResponseEmitter {
 
     public function emit(Response $response) {
