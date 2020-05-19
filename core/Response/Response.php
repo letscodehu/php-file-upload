@@ -2,7 +2,7 @@
 
 namespace Response;
 
-class Response {
+class Response implements ResponseInterface {
         
     private $headers = [];
     private $body;
@@ -20,8 +20,9 @@ class Response {
         return $this->headers;
     }
 
-    public function getBody() {
-        return $this->body;
+    public function emitBody()
+    {
+        echo $this->body;   
     }
 
     public function getStatusCode() {

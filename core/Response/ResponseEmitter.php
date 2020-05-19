@@ -4,10 +4,10 @@ namespace Response;
 
 class ResponseEmitter {
 
-    public function emit(Response $response) {
+    public function emit(ResponseInterface $response) {
         $this->emitStatusLine($response->getStatusCode(), $response->getReasonPhrase());
         $this->emitHeaders($response->getHeaders());
-        $this->emitBody($response->getBody());
+        $response->emitBody();
     }
 
     private function emitStatusLine(int $statusCode, string $reasonPhrase) {
@@ -22,9 +22,5 @@ class ResponseEmitter {
         foreach ($headers as $key => $value) {
             header(sprintf("%s: %s", $key, $value));
         }
-    }
-
-    private function emitBody(string $body) {
-        echo $body;
     }
 }

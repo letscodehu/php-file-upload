@@ -4,4 +4,5 @@ namespace Session;
 
 interface Session extends \Storage {
 
+
 }

@@ -13,6 +13,9 @@ class ResponseFactory {
     }
 
     public function createResponse($controllerResult, Request $request) {
+        if ($controllerResult instanceof ResponseInterface) {
+            return $controllerResult;
+        }
         if (is_array($controllerResult)) {
             if($matches = preg_match("%^redirect\:%", $controllerResult[0])) {
                 return new Response("",[

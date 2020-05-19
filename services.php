@@ -40,6 +40,9 @@ return [
     'singleImageController' => function (ServiceContainer $container) {
         return new Controllers\Image\SingleImageController($container->get("photoService"));
     },
+    'imageServeController' => function (ServiceContainer $container) {
+        return new Controllers\Image\ImageServeController($container->get("basePath"));
+    },
     'singleImageEditController' => function (ServiceContainer $container) {
         return new Controllers\Image\SingleImageEditController($container->get("photoService"));
     },
@@ -99,7 +102,7 @@ return [
     },
     'pipeline' => function (ServiceContainer $container) {
         $pipeline = new Middleware\MiddlewareStack();
-        $authMiddleware = new AuthorizationMiddleware(["/"], $container->get("authService"), "/login");
+        $authMiddleware = new AuthorizationMiddleware(["^/$", "^/image/[0-9]+$", "^/private/[a-z\.0-9]+"], $container->get("authService"), "/login");
         $dispatcherMiddleware = new Middleware\DispatchingMiddleware($container->get("dispatcher"), $container->get("responseFactory"));
         $pipeline->addMiddleware($authMiddleware);
         $pipeline->addMiddleware($dispatcherMiddleware);
@@ -111,6 +114,8 @@ return [
         $dispatcher->addRoute('/image/(?<id>[\d]+)', 'singleImageController@display');
         $dispatcher->addRoute('/image/(?<id>[\d]+)/edit', 'singleImageEditController@edit', "POST");
         $dispatcher->addRoute('/image/(?<id>[\d]+)/delete', 'singleImageDeleteController@delete', "POST");
+
+        $dispatcher->addRoute('/private/(?<id>[a-z\.0-9]+)', 'imageServeController@show');
 
         $dispatcher->addRoute('/login', 'loginFormController@show');
         $dispatcher->addRoute('/logout', 'logoutSubmitController@submit');
