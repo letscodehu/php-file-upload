@@ -5,25 +5,35 @@ namespace Controllers\Image;
 use Request\Request;
 
 use Services\PhotoService;
+use Validation\Validator;
 
 class ImageCreateSubmitController {
 
     private $basePath;
     private $request;
     private $photoService;
+    private $validator;
 
-    public function __construct(string $basePath, Request $request, PhotoService $photoService) {
+    public function __construct(string $basePath, Request $request, PhotoService $photoService, Validator $validator) {
         $this->basePath = $basePath;
+        $this->validator = $validator;
         $this->request = $request;
         $this->photoService = $photoService;
     }
 
     public function submit() {
-        // handle uploaded file
+        
         $targetDir = $this->basePath. "/storage/";        
         try {
             $title = $this->request->getParam("title");
             $file = $this->request->getFile("file");
+            $violations = $this->validate($this->request);
+            if (count($violations) !== 0) {
+                $this->request->getSession()->put("violations", $violations);
+                return [
+                    "redirect:/image/add", []
+                ];
+            }
             switch($file->error()) {
                 case UPLOAD_ERR_OK:
                     break;
@@ -58,6 +68,12 @@ class ImageCreateSubmitController {
 
         }
         
+    }
+
+    private function validate(Request $request) {
+        return $this->validator->validate([
+            $request->getParam("title") => "required|min:5|max:255"
+        ]);
     }
 
 }

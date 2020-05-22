@@ -2,8 +2,8 @@
 
 namespace Request;
 
-use ServiceContainer;
 use FileSystem\UploadedFile;
+use ServiceContainer;
 
 class RequestFactory {
 

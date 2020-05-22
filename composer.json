@@ -15,6 +15,7 @@
     },
     "require": {
         "swiftmailer/swiftmailer": "^6.2",
-      "ext-mysqli": "*"
+      "ext-mysqli": "*",
+        "symfony/validator": "^5.0"
     }
 }

@@ -5,6 +5,13 @@
                 <div class="form-group">
                     <label for="title">Title</label>
                     <input id="title" name="title" class="form-control" placeholder="Enter the title here."/>
+                    <?php if($violations): ?>
+                        <?php foreach ($violations as $v): ?>
+                        <div class="alert alert-warning">
+                            <?= $v->getMessage() ?>
+                        </div>
+                        <?php endforeach ?>
+                    <?php endif ?>
                     <input name="file" type="file" class="form-control"/>
                 </div>
                 <button type="submit" class="btn btn-primary">Create</button>

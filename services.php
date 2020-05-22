@@ -4,6 +4,7 @@ use Middleware\AuthorizationMiddleware;
 use Services\ForgotPasswordService;
 use Request\RequestFactory;
 use Exception\SqlException;
+use Validation\Validator;
 
 return [
     "responseFactory" => function (ServiceContainer $container) {
@@ -27,6 +28,9 @@ return [
         }
         return $connection;
     },
+    "validator" => function() {
+        return new Validator();
+    },
     "baseUrl" => function() {
         $protocol = strpos($_SERVER['SERVER_PROTOCOL'],'https') === 0 ? 'https://' : 'http://';
         return $protocol.$_SERVER['HTTP_HOST'];
@@ -49,12 +53,12 @@ return [
     'singleImageDeleteController' => function (ServiceContainer $container) {
         return new Controllers\Image\SingleImageDeleteController($container->get("photoService"));
     },
-    'imageCreateFormController' => function () {
-        return new Controllers\Image\ImageCreateFormController();
+    'imageCreateFormController' => function (ServiceContainer $container) {
+        return new Controllers\Image\ImageCreateFormController($container->get("session"));
     },
     'imageCreateSubmitController' => function (ServiceContainer $container) {
         return new Controllers\Image\ImageCreateSubmitController($container->get("basePath"), 
-        $container->get("request"), $container->get("photoService"));
+        $container->get("request"), $container->get("photoService"), $container->get("validator"));
     },
     'loginFormController' => function (ServiceContainer $container) {
         return new Controllers\Auth\LoginFormController($container->get("session"));
