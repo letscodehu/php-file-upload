@@ -8,12 +8,13 @@ use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\ConstraintViolationList;
 use Symfony\Component\Validator\Validation;
+use Validation\Constraint\Image;
 
 class Validator {
 
     public function validate(array $valueConstrantMap) {
         $violations = new ConstraintViolationList();
-        foreach ($valueConstrantMap as $value => $constraints) {
+        foreach ($valueConstrantMap as $constraints => $value) {
             $newViolations = Validation::createValidator()
             ->validate($value, $this->instantiateConstraints($constraints));
             $violations->addAll($newViolations);
@@ -45,6 +46,8 @@ class Validator {
                 return new Length(["min" => $param]);
             case "max" :
                 return new Length(["max" => $param]);
+            case "image" : 
+                return new Image();
             default:
                 throw new InvalidArgumentException("The constraint string ${constraint} is not available!");
         }
