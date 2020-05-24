@@ -16,6 +16,14 @@ class ResponseFactory {
         if ($controllerResult instanceof ResponseInterface) {
             return $controllerResult;
         }
+        if ($controllerResult instanceof Redirect) {
+            foreach ($controllerResult->getFlashMessages() as $key => $value) {
+                $request->getSession()->flash()->put($key, $value);
+            }
+            return new Response("", [
+                "Location" => $controllerResult->getTarget()
+            ],  302, "Found");
+        }
         if (is_array($controllerResult)) {
             if($matches = preg_match("%^redirect\:%", $controllerResult[0])) {
                 return new Response("",[

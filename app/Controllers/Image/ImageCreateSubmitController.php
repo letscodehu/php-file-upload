@@ -3,7 +3,7 @@
 namespace Controllers\Image;
 
 use Request\Request;
-
+use Response\Redirect;
 use Services\PhotoService;
 use Validation\Validator;
 
@@ -29,25 +29,16 @@ class ImageCreateSubmitController {
             $file = $this->request->getFile("file");
             $violations = $this->validate($title, $file);
             if (count($violations) !== 0) {
-                $this->request->getSession()->put("violations", $violations);
-                return [
-                    "redirect:/image/add", []
-                ];
+                return Redirect::to("/image/add")->with("violations", $violations);
             }
             $targetFile = uniqid($targetDir, true). ".png";
             $file->moveTo($targetFile);
             $photo = $this->photoService->createImage($title, "/private/" . basename($targetFile));
-            return [
-                "redirect:/image/" . $photo->getId(), [
-                ]
-            ];    
-            
+            return Redirect::to("/image/". $photo->getId());
         } catch (\RuntimeException $ex) {
             logMessage("ERROR", $ex->getMessage());
             // put some error flag to session
-            return [
-                "redirect:/image/add", []
-            ];
+            return Redirect::to("/image/add");
 
         }
         

@@ -32,4 +32,8 @@ class BuiltInSession implements Session {
     function toArray() {
         return $_SESSION;
     }
+
+    function flash() {
+        return new Flash($this);
+    }
 }

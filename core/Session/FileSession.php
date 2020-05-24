@@ -52,6 +52,10 @@ class FileSession implements Session {
         return $this->getData();
     }
 
+    function flash() {
+        return new Flash($this);
+    }
+
     private function getData() {
         if ($this->data == null) {
             if (file_exists($this->filename)) {

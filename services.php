@@ -4,6 +4,7 @@ use Middleware\AuthorizationMiddleware;
 use Services\ForgotPasswordService;
 use Request\RequestFactory;
 use Exception\SqlException;
+use Middleware\FlashMessageCleanupMiddleware;
 use Validation\Validator;
 
 return [
@@ -109,6 +110,7 @@ return [
         $authMiddleware = new AuthorizationMiddleware(["^/$", "^/image/[0-9]+$", "^/private/[a-z\.0-9]+"], $container->get("authService"), "/login");
         $dispatcherMiddleware = new Middleware\DispatchingMiddleware($container->get("dispatcher"), $container->get("responseFactory"));
         $pipeline->addMiddleware($authMiddleware);
+        $pipeline->addMiddleware(new FlashMessageCleanupMiddleware);
         $pipeline->addMiddleware($dispatcherMiddleware);
         return $pipeline;
     },

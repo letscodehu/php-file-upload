@@ -18,6 +18,7 @@ class DispatchingMiddleware implements Middleware {
 
     function process(Request $request, Response $response, callable $next) {
         $controllerResult = $this->dispatcher->dispatch($request);
+        logMessage("INFO","Creating response");
         return $this->responseFactory->createResponse($controllerResult, $request);
     }
 

@@ -2,8 +2,7 @@
 
 namespace Controllers\ForgotPassword;
 
-
-use Request;
+use Request\Request;
 use Services\ForgotPasswordService;
 
 class ForgotPasswordSubmitController
@@ -35,7 +34,6 @@ class ForgotPasswordSubmitController
         $this->forgotPasswordService->forgotPassword($params["email"]);
         return [
             "redirect:/forgotpass", [
-                "title" => "Forgot password"
             ]
         ];
     }

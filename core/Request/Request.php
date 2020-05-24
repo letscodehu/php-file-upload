@@ -51,6 +51,9 @@ class Request {
         return $this->method;
     }
 
+    /**
+     * @return Session
+     */
     public function getSession()
     {
         return $this->session;
