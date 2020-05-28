@@ -12,6 +12,7 @@
                         </div>
                         <?php endforeach ?>
                     <?php endif ?>
+                    <?= $_csrf ?>
                     <input name="file" type="file" class="form-control"/>
                 </div>
                 <button type="submit" class="btn btn-primary">Create</button>

@@ -70,4 +70,34 @@ class FileSession implements Session {
             throw new \Exception("Cant write file: ". $this->filename);
         }
     }
+
+    public function getToken(string $tokenId) {
+        return $this->get('_csrf:'.$tokenId);
+    }
+
+    /**
+     * Stores a CSRF token.
+     */
+    public function setToken(string $tokenId, string $token) {
+        $this->put('_csrf:'.$tokenId, $token);
+    }
+
+    /**
+     * Removes a CSRF token.
+     *
+     * @return string|null Returns the removed token if one existed, NULL
+     *                     otherwise
+     */
+    public function removeToken(string $tokenId) {
+        $this->remove('_csrf:'.$tokenId);
+    }
+
+    /**
+     * Checks whether a token with the given token ID exists.
+     *
+     * @return bool Whether a token exists with the given ID
+     */
+    public function hasToken(string $tokenId) {
+        return $this->has('_csrf:'.$tokenId);
+    }
 }

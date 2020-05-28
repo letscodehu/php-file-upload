@@ -4,7 +4,10 @@ use Middleware\AuthorizationMiddleware;
 use Services\ForgotPasswordService;
 use Request\RequestFactory;
 use Exception\SqlException;
+use Middleware\CsrfMiddleware;
 use Middleware\FlashMessageCleanupMiddleware;
+use Symfony\Component\Security\Csrf\CsrfTokenManager;
+use Symfony\Component\Security\Csrf\TokenGenerator\UriSafeTokenGenerator;
 use Validation\Validator;
 
 return [
@@ -12,7 +15,7 @@ return [
         return new Response\ResponseFactory($container->get("viewRenderer"));
     },
     "viewRenderer" => function (ServiceContainer $container) {
-        return new ViewRenderer($container->get("basePath"));
+        return new ViewRenderer($container->get("basePath"), $container->get('csrf'));
     },
     'responseEmitter' => function () {
         return new Response\ResponseEmitter();
@@ -105,10 +108,14 @@ return [
     'request' => function (ServiceContainer $container) {
         return RequestFactory::createFromGlobals($container);
     },
+    'csrf' => function(ServiceContainer $serviceContainer) {
+        return new CsrfTokenManager(new UriSafeTokenGenerator(), $serviceContainer->get('session'));
+    },
     'pipeline' => function (ServiceContainer $container) {
         $pipeline = new Middleware\MiddlewareStack();
         $authMiddleware = new AuthorizationMiddleware(["^/$", "^/image/[0-9]+$", "^/private/[a-z\.0-9]+"], $container->get("authService"), "/login");
         $dispatcherMiddleware = new Middleware\DispatchingMiddleware($container->get("dispatcher"), $container->get("responseFactory"));
+        $pipeline->addMiddleware(new CsrfMiddleware($container->get("csrf")));
         $pipeline->addMiddleware($authMiddleware);
         $pipeline->addMiddleware(new FlashMessageCleanupMiddleware);
         $pipeline->addMiddleware($dispatcherMiddleware);
