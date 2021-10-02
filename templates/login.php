@@ -13,6 +13,7 @@
             <label for="password">Password</label>
             <input type="password" class="form-control" name="password" id="password" placeholder="Enter your password...">
         </div>
+        <?= $_csrf ?>
         <button type="submit" class="btn btn-primary">Login</button>
     </form>
     <div style="padding-top: 20px;text-align:center">
